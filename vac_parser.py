@@ -18,7 +18,7 @@ def count_pages(html_doc):
     return int(pages_block[-1].string)
 
 
-def request_to_hh(vacancy, page=6):
+def request_to_hh(vacancy, page=2):
     header = {
         'accept': '*/*',
         'user-agent': 'User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
@@ -96,7 +96,7 @@ def page_parser(html_docs):
                        'requirements': requir,
                        'link': link,
                        'responded': responded
-                       }, columns=columns)
+                       }, index=None, columns=columns)
     save_to_db(df)
 
 
