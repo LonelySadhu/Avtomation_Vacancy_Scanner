@@ -20,16 +20,18 @@ def create_csv_db():
 def save_to_db(df):
     try:
         data = pd.read_csv('vacancies.csv')
-        data = pd.concat([data, df], ignore_index=True, axis=1)
-        data.to_csv('vacancies.csv')
+        df = df.loc[~df['link'].isin(data.link.values)]
+        data = pd.concat([data, df], ignore_index=True)
+        data.to_csv('vacancies.csv', index=False)
     except FileNotFoundError:
-        df.to_csv('vacancies.csv')
+        df.to_csv('vacancies.csv', index=False)
 
 
 def show_db():
     data = pd.read_csv('vacancies.csv')
     print(data.columns)
-    print(data.head())
+    print(data.info())
+    print(data.shape)
 
 
 
