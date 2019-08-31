@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+from datetime import datetime
 import re
 import pandas as pd
 from vacancy_db import save_to_db
@@ -62,13 +63,14 @@ def request_to_hh(vacancy, page=2):
 def page_parser(html_docs):
 
     # структура для записи в бд
-    columns = ['position_name', 'salary', 'company', 'responsibilities', 'requirements', 'link', 'responded']
+    columns = ['position_name', 'salary', 'company', 'responsibilities', 'requirements', 'link', 'date', 'responded']
     position_name = []
     salary = []
     company = []
     responsib = []
     requir = []
     link = []
+    date = []
     responded = []
 
     for doc in html_docs:  # Обходим все переданные страницы и парсим нужные данные
@@ -87,6 +89,7 @@ def page_parser(html_docs):
             requir.append(vac.find('div', {'data-qa': 'vacancy-serp__vacancy_snippet_responsibility'}).string)
             responsib.append(vac.find('div', {'data-qa':'vacancy-serp__vacancy_snippet_requirement'}).string)
             link.append(vac.find('div', {'class': 'resume-search-item__name'}).span.a['href'])
+            date.append(datetime.now().date())
             responded.append(False)
 
     df = pd.DataFrame({'position_name': position_name,
@@ -95,6 +98,7 @@ def page_parser(html_docs):
                        'responsibilities': responsib,
                        'requirements': requir,
                        'link': link,
+                       'date': date,
                        'responded': responded
                        }, index=None, columns=columns)
     save_to_db(df)
